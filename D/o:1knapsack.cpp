@@ -1,43 +1,56 @@
-/* A Naive recursive implementation
-of 0-1 Knapsack problem */
-#include <stdio.h>
- 
-// A utility function that returns
-// maximum of two integers
-int max(int a, int b) { return (a > b) ? a : b; }
- 
-// Returns the maximum value that can be
-// put in a knapsack of capacity W
-int knapSack(int W, int wt[], int val[], int n)
+#include <bits/stdc++.h>
+using namespace std;
+
+// 0/1 knapsack problem using dynamic programming
+
+struct item
 {
-    // Base Case
-    if (n == 0 || W == 0)
-        return 0;
- 
-    // If weight of the nth item is more than
-    // Knapsack capacity W, then this item cannot
-    // be included in the optimal solution
-    if (wt[n - 1] > W)
-        return knapSack(W, wt, val, n - 1);
- 
-    // Return the maximum of two cases:
-    // (1) nth item included
-    // (2) not included
-    else
-        return max(
-            val[n - 1]
-                + knapSack(W - wt[n - 1],
-                           wt, val, n - 1),
-            knapSack(W, wt, val, n - 1));
+    int weight;
+    int value;
+};
+
+int knapsack(int W, item arr[], int n)
+{
+    // create a 2D array to store the results of subproblems
+    int dp[n + 1][W + 1];
+    for (int i = 0; i <= n; i++)
+    {
+        for (int j = 0; j <= W; j++)
+        {
+            if (i == 0 || j == 0)
+            {
+                dp[i][j] = 0;
+            }
+            else if (arr[i - 1].weight <= j)
+            {
+                /*if the weight of the item is less than or equal to the capacity of the knapsack then we have two options
+                either we include the item or we don't include the item in the knapsack and we take the maximum of the two
+                values */
+                dp[i][j] = max(arr[i - 1].value + dp[i - 1][j - arr[i - 1].weight], dp[i - 1][j]);
+            }
+            else
+            {
+                dp[i][j] = dp[i - 1][j];
+            }
+        }
+    }
+    return dp[n][W];
 }
- 
-// Driver program to test above function
+
 int main()
 {
-    int val[] = { 60, 100, 120 };
-    int wt[] = { 10, 20, 30 };
-    int W = 50;
-    int n = sizeof(val) / sizeof(val[0]);
-    printf("%d", knapSack(W, wt, val, n));
+    int n, W;
+    cout << "Enter the number of items: ";
+    cin >> n;
+    cout << "Enter the capacity of knapsack: ";
+    cin >> W;
+    cout << "Enter the weight and value of each item: ";
+    item arr[n];
+    for (int i = 0; i < n; i++)
+    {
+        cin >> arr[i].weight >> arr[i].value;
+    }
+    cout << "Maximum value that can be put in knapsack is: " << knapsack(W, arr, n);
+
     return 0;
 }
