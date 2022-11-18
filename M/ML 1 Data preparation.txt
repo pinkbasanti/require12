@@ -1,0 +1,66 @@
+Practical 1- data preparation
+
+import os
+os.getcwd()
+
+import pandas as pd
+
+df = pd.read_csv('Heart 2.csv')
+
+df.head(5)
+
+df.shape
+
+df.isnull()
+
+df.isnull().sum()
+
+df.count()
+
+df.info()
+
+df.dtypes
+
+df == 0
+
+df[df == 0]
+
+df[df == 0].count()
+
+df.columns
+
+df['Age'].mean()
+
+df['Age'].median()
+
+newdf = df[['Age','Sex','ChestPain','RestBP','Chol']]
+
+newdf
+
+rom sklearn.model_selection import train_test_split
+train , test = train_test_split(df,random_state=0,test_size=0.25)
+
+train.shape
+
+test.shape
+
+import numpy as np
+
+actual = list(np.ones(45)) + list(np.zeros(55))
+
+np.array(actual)
+
+predicted = list(np.ones(40)) + list(np.zeros(52)) + list(np.ones(8))
+
+np.array(predicted)
+
+from sklearn.metrics import ConfusionMatrixDisplay
+
+ConfusionMatrixDisplay.from_predictions(actual,predicted)
+
+from sklearn.metrics import classification_report,accuracy_score
+
+print(classification_report(actual,predicted))
+
+accuracy_score(actual,predicted)
+
