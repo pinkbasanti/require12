@@ -1,0 +1,33 @@
+import pandas as pd
+
+data = pd.read_csv('Market_Basket_Optimisation.csv')
+
+data.head()
+
+len(data)
+
+data.info()
+
+# Generlizing transaction list...
+transaction = []
+for i in range(0,7500):
+transaction.append([str(data.values[i,j]) for j in range(0,20)])
+
+# Creating apriori model...
+from apyori import apriori
+tran_rules = apriori(transaction,min_support = 0.003, min_confidence = 0.6,min_lift = 3,min_length = 2)
+
+# visualising the results...
+results = list(tran_rules)
+print(results[:10])
+
+def ins(result):
+lhs = [tuple(res[2][0][0])[0] for res in result]
+rhs = [tuple(res[2][0][1])[0] for res in result]
+support = [res[1] for res in result]
+confi = [res[2][0][2] for res in result]
+lift = [res[2][0][3] for res in result]
+return list(zip(lhs,rhs,support,confi,lift))
+rdf = pd.DataFrame(ins(results),columns= ['left hand side','right hand side','support','confidence','lift'])
+
+rdf.nlargest(n=10, columns='confidence')

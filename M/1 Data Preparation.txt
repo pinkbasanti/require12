@@ -1,0 +1,57 @@
+
+import pandas as pd
+
+import numpy as np
+
+df=pd.read_csv('Heart.csv')
+
+df.head()
+
+df.tail()
+
+df.describe()
+
+df.shape
+
+df.info()
+
+df.dtypes
+
+df.isnull().sum()
+
+df.count(0).sum()
+
+df['Age'].mean()
+
+df['Age'].max()
+
+df['Age'].min()
+
+df.rename(columns={'MaxHR':'new_MaxHR'})
+
+df['AHD']=df['AHD'].map({'Yes':1,'No':0})
+
+df['AHD']
+
+A=df[['Age','Sex','ChestPain','RestBP','Chol']]
+A
+
+x=df[['Age','Sex','ChestPain','RestBP','Chol']]
+y=df['AHD']
+
+from sklearn.model_selection import train_test_split
+xtrain,xtest,ytrain,ytest=train_test_split(x,y,train_size=0.75, random_state=42)
+
+xtrain.shape
+
+xtest.shape
+
+ytrain.shape
+
+ytest.shape
+
+df['Ca']=df['Ca'].replace(np.NaN,df['Ca'].mean())
+
+df['Thal']=df['Thal'].fillna('Normal')
+
+df.isnull().sum()

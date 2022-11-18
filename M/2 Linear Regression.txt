@@ -1,0 +1,76 @@
+
+import pandas as pd
+import numpy as np
+
+df = pd.read_csv('temperatures.csv')
+
+df.head()
+
+df.tail()
+
+df.describe()
+
+df.info()
+
+df.dtypes
+
+df.shape
+
+#creating independent and dependent variables...
+x=df[['YEAR']]
+y=df[['JAN']]
+
+print(x)
+print(y)
+
+from sklearn.model_selection import train_test_split
+xtrain,xtest,ytrain,ytest=train_test_split(x,y,test_size=0.2,random_state=45)
+
+print(xtrain.shape)
+print(xtest.shape)
+print(ytrain.shape)
+print(ytest.shape)
+
+#import linear Regression class....
+from sklearn.linear_model import LinearRegression
+
+#creating object of linear Regression....(creating model)
+reg=LinearRegression()
+
+#training the model...
+reg.fit(xtrain,ytrain)
+
+#find y intercept and slope....
+print(reg.intercept_)
+print(reg.coef_)
+
+#predict the data...
+y_predict=reg.predict(xtest)
+
+#import metrics library for performance measures....
+from sklearn.metrics import mean_absolute_error,mean_squared_error,r2_score
+
+#calculate the performance metrics....
+mse=mean_squared_error(ytest,y_predict)
+rmse=np.sqrt(mse)
+mae=mean_absolute_error(ytest,y_predict)
+r2=r2_score(ytest,y_predict)
+ar2=1-(1-r2)*(len(y)-1)/(len(y)-1-1)
+
+print('mse: ',mse)
+print('rmse: ',rmse)
+print('mae:',mae)
+print('r2: ',r2)
+print('ar2: ',ar2)
+
+import matplotlib.pyplot as plt
+
+#plot actual temperature.....
+plt.figure(figsize=(10,7))
+plt.title('Temperature Vs Year')
+plt.xlabel('Year')
+plt.ylabel('Temperature')
+#actual temperature....
+plt.scatter(xtest,ytest,color='red')
+#predict temperature using model....
+plt.plot(xtest,y_predict,color='blue')

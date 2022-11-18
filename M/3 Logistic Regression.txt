@@ -1,0 +1,57 @@
+import pandas as pd
+import seaborn as sns
+
+df=sns.load_dataset('iris')
+
+df.head()
+
+df.tail()
+
+df.info()
+
+from sklearn.preprocessing import LabelEncoder
+label=LabelEncoder()
+df['species']=label.fit_transform(df['species'])
+
+df['species'].unique()
+
+df['species'].nunique()
+
+x=df.drop(['species'],axis=1)
+y=df['species']
+
+print(x)
+print(y)
+
+from sklearn.model_selection import train_test_split
+
+xtrain,xtest,ytrain,ytest=train_test_split(x,y,test_size=0.2,random_state=0)
+
+
+print(xtrain.shape)
+print(xtest.shape)
+print(ytrain.shape)
+print(ytest.shape)
+
+from sklearn.preprocessing import StandardScaler
+sc=StandardScaler()
+xtrain=sc.fit_transform(xtrain)
+xtest=sc.fit_transform(xtest)
+
+
+from sklearn.linear_model import LogisticRegression
+reg=LogisticRegression()
+reg.fit(xtrain,ytrain)
+
+y_predict=reg.predict(xtest)
+
+from sklearn.metrics import confusion_matrix
+cm=confusion_matrix(ytest,y_predict)
+print(cm)
+
+rom sklearn.metrics import classification_report
+cr=classification_report(ytest,y_predict)
+print(cr)
+
+from sklearn.metrics import accuracy_score
+print('Accuracy Score: ',accuracy_score(ytest,y_predict))

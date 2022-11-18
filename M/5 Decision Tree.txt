@@ -1,0 +1,68 @@
+import pandas as pd
+import numpy as np
+
+df=pd.read_csv('Admission_Predict.csv')
+
+df.head()
+
+#drop Serail No. column as it has no significance
+df.drop(['Serial No.'],axis=1)
+
+# convert chance of admit column into binary values
+df['Chance of Admit ']=df['Chance of Admit '].apply(lambda x:1 if x>=0.50 else 0)
+
+# dependent and independent variables...
+x=df.drop(['Chance of Admit '],axis=1)
+y=df['Chance of Admit ']
+
+#splitting the dataset
+from sklearn.model_selection import train_test_split
+
+xtrain,xtest,ytrain,ytest=train_test_split(x,y,test_size=0.2,random_state=42)
+
+print(xtrain.shape)
+print(xtest.shape)
+print(ytrain.shape)
+print(ytest.shape)
+
+#Creating Model
+from sklearn.tree import DecisionTreeClassifier
+
+dt=DecisionTreeClassifier()
+
+dt.fit(xtrain,ytrain)
+
+y_pred=dt.predict(xtest)
+
+y_pred
+
+dt=DecisionTreeClassifier(criterion='gini',max_depth=2,random_state=1).fit(xtrain,ytrain)
+
+df.columns
+
+features=['GRE Score', 'TOEFL Score', 'University Rating', 'SOP',
+ 'LOR ', 'CGPA', 'Research']
+
+
+import matplotlib.pyplot as plt
+from sklearn import tree
+
+fig=plt.figure(figsize=(25,20))
+tree.plot_tree(dt,feature_names=features,class_names=['0','1'],filled=True)
+
+from sklearn.metrics import confusion_matrix
+
+cm=confusion_matrix(ytest,y_pred)
+print(cm)
+
+from sklearn.metrics import classification_report,accuracy_score
+
+cr=classification_report(ytest,y_pred)
+print(cr)
+
+accuracy=accuracy_score(ytest,y_pred)
+print('Accuracy: ',accuracy)
+
+
+
+

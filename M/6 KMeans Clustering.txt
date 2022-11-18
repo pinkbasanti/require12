@@ -1,0 +1,48 @@
+import pandas as pd
+import numpy as np
+
+df=pd.read_csv('Mall_Customers.csv')
+
+df.head()
+
+#creating 2D array
+x=df[['Annual Income (k$)','Spending Score (1-100)']].values
+x
+
+from sklearn.cluster import KMeans
+
+#finding optimal value of K using elbo method
+wcss=[]
+for i in range(1,11):
+ global km
+ km=KMeans(n_clusters=i,init='k-means++',random_state=101)
+ km.fit(x)
+ wcss.append(km.inertia_)
+
+import matplotlib.pyplot as plt
+
+plt.plot(range(1,11),wcss)
+plt.title('The Elbow Graph Method')
+plt.xlabel('Number of clusters (k)')
+plt.ylabel('wcss_list')
+plt.show()
+
+# from above graph we can see that curve shape is at 5 so we can take the value of k as 5
+
+final=KMeans(n_clusters=5,init='k-means++',random_state=101)
+prediction=final.fit_predict(x)
+print(prediction)
+
+import matplotlib.pyplot as mtb
+
+
+mtb.figure(figsize=(15,7))
+mtb.scatter(x[prediction==0,0],x[prediction==0,1],s=60,c='red',label='cluster1')
+mtb.scatter(x[prediction==1,0],x[prediction==1,1],s=60,c='green',label='cluster2')
+mtb.scatter(x[prediction==2,0],x[prediction==2,1],s=60,c='blue',label='cluster3')
+mtb.scatter(x[prediction==3,0],x[prediction==3,1],s=60,c='orange',label='cluster4')
+mtb.scatter(x[prediction==4,0],x[prediction==4,1],s=60,c='yellow',label='cluster5')
+mtb.scatter(km.cluster_centers_[:,0],km.cluster_centers_[:,1],s=100,c='black',label='centroids')
+mtb.legend()
+mtb.show()
+

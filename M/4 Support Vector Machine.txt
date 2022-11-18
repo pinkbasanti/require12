@@ -1,0 +1,54 @@
+import pandas as pd
+import numpy as np
+
+df=pd.read_csv('Admission_Predict.csv')
+
+df.head()
+
+df.drop(['Serial No.'],axis=1)
+
+df.info()
+
+df['Chance of Admit ']=df['Chance of Admit '].apply(lambda x:1 if x>=0.50 else 0)
+
+x=df.drop(['Chance of Admit '],axis=1)
+y=df['Chance of Admit ']
+
+from sklearn.model_selection import train_test_split
+
+xtrain,xtest,ytrain,ytest=train_test_split(x,y,test_size=0.2,random_state=0)
+
+print(xtrain.shape)
+print(xtest.shape)
+print(ytrain.shape)
+print(ytest.shape)
+
+from sklearn.svm import SVC
+
+classifier1=SVC(kernel='linear')
+classifier1.fit(xtrain,ytrain)
+y1_pred=classifier1.predict(xtest)
+
+classifier2=SVC(kernel='poly')
+classifier2.fit(xtrain,ytrain)
+y2_pred=classifier2.predict(xtest)
+
+classifier3=SVC(kernel='rbf')
+classifier3.fit(xtrain,ytrain)
+y3_pred=classifier3.predict(xtest)
+
+classifier4=SVC(kernel='sigmoid')
+classifier4.fit(xtrain,ytrain)
+y4_pred=classifier4.predict(xtest)
+
+final=pd.DataFrame({'Actual':ytest,'Linear Kernel':y1_pred,'Polynomial Kernel':y2_pred,
+'RBF Kernel':y3_pred,'Sigmoid Kernel':y4_pred})
+
+final.head(50)
+
+from sklearn.metrics import accuracy_score
+
+accuracy=pd.DataFrame({'Linear':accuracy_score(ytest,y1_pred),'Polynomial':accuracy_score(ytest,y2_pred),
+'RBF':accuracy_score(ytest,y3_pred),'Sogmoid':accuracy_score(ytest,y4_pred)},index=[0])
+
+accuracy
